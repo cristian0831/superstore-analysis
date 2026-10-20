@@ -1,0 +1,9 @@
+pandas
+numpy
+chardet
+jupyter
+matplotlib
+seaborn
+scikit-learn
+pytest
+statsmodels>=0.15
