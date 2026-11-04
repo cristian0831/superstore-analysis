@@ -1,8 +1,10 @@
 import pandas as pd
 import pytest
 
-from scripts.phase2_data_preparation.run_phase import QUERIES_DIR
+from src.config import SQL_DIR
 from src.db_utils import run_query
+
+QUERIES_DIR = SQL_DIR / "forecasting"
 
 EXPECTED_TABLES = {
     "customers",

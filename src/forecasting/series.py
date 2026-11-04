@@ -10,7 +10,7 @@ SERIES = [TOTAL, *CATEGORIES]
 def load_monthly_sales() -> pd.DataFrame:
     """Monthly sales indexed by month start, one column per series (Total + each category).
 
-    Reads the CSVs written by scripts/phase2_data_preparation/run_phase.py.
+    Reads the CSVs written by `python -m src.sql_runner forecasting`.
     """
     total = pd.read_csv(config.MONTHLY_SALES_CSV, parse_dates=["month_start"])
     by_category = pd.read_csv(

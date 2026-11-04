@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from src.baselines import naive_forecast, seasonal_naive_forecast
-from src.metrics import mape, wape
+from src.forecasting.baselines import naive_forecast, seasonal_naive_forecast
+from src.forecasting.metrics import mape, wape
 
 
 def test_mape_averages_the_percentage_errors():

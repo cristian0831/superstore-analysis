@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 
 from src import config
-from src.series import CATEGORIES, SERIES, load_monthly_sales, split_holdout
+from src.forecasting.series import CATEGORIES, SERIES, load_monthly_sales, split_holdout
 
 MONTHS = pd.date_range("2020-01-01", periods=4, freq="MS")
 CATEGORY_SALES = {"Furniture": 10.0, "Office Supplies": 20.0, "Technology": 30.0}
