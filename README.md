@@ -9,7 +9,7 @@ One ETL builds a SQLite star schema that every analysis reads from. The analysis
 | Track | Question | Status | Details |
 |---|---|---|---|
 | **Business diagnostics** | Which products, regions and customer segments make or lose money? | Done | [reports/diagnostics.md](reports/diagnostics.md) |
-| **Demand forecasting** | How much will each category sell in the next six months? | Holt-Winters validated; SARIMA next | [reports/forecasting.md](reports/forecasting.md) |
+| **Demand forecasting** | How much will each category sell in the next six months? | Done: forecast and inventory plan for Jan–Jun 2018 | [reports/forecasting.md](reports/forecasting.md) |
 | **Regression** | Which factors drive profit on an order line? | Planned | — |
 
 ## Headline results
@@ -22,26 +22,26 @@ One ETL builds a SQLite star schema that every analysis reads from. The analysis
 
 ### Demand forecasting
 
-WAPE on the 12 holdout months (Jan–Dec 2017), lower is better:
+SARIMA was the most accurate model on a 12-month holdout (WAPE 19.8–32.3% per category, against 20.9–35.9% for the seasonal naive benchmark), with Total best forecast as the sum of the categories (WAPE 20.5%). Refitted on all four years, it forecasts January–June 2018:
 
-| Series | Seasonal naive (benchmark) | Holt-Winters |
-|---|---|---|
-| Total | 25.3% | **22.5%** |
-| Furniture | **20.9%** | 23.8% |
-| Office Supplies | 35.9% | **29.2%** |
-| Technology | 34.6% | **33.5%** |
+| Category | H1 2018 forecast | vs H1 2017 | Stock target (90% service level) | Peak month |
+|---|---|---|---|---|
+| Furniture | \$84K | +22% | \$113K | June |
+| Office Supplies | \$123K | +38% | \$163K | March |
+| Technology | \$142K | +43% | \$221K | March |
 
-- **Holt-Winters beats the benchmark on 3 of 4 series.**
-- **All forecasts are too low.** Sales grew 20.4% in 2017 and Holt-Winters under-forecast the year by 20.0%, which is the main problem for the next models to solve.
+- **Technology needs the most stock and the largest buffer:** 36% of its stock target is safety stock, because its forecast is the most uncertain.
+- **Build stock ahead of March** for Office Supplies and Technology; **ramp Furniture up towards May–June**, without overstocking it: excess Furniture gets cleared with discounts, which the diagnostics show make it loss-making.
+- **Keep January–February lean.** The model's February forecasts for Office Supplies and Technology are flagged for review: they sit far above last year's February.
 
-![Holdout forecasts against actual 2017 sales](outputs/forecasting/figures/06_holdout_forecasts.png)
+![Stock targets by category and month](outputs/forecasting/figures/09_stock_targets_2018H1.png)
 
 ## Roadmap
 
 - [x] ETL: raw CSV → cleaned, validated SQLite star schema
 - [x] Business diagnostics: growth, category, segment, discount and regional profitability
-- [x] Forecasting: monthly series, trend and seasonality analysis, baselines, Holt-Winters
-- [ ] Forecasting: SARIMA (Prophet as an option), six-month forecast with confidence intervals
+- [x] Forecasting: monthly series, trend and seasonality analysis, baselines, Holt-Winters, SARIMA
+- [x] Forecasting: six-month forecast with confidence intervals and an inventory plan by category and month
 - [ ] Regression: profit drivers (discount vs profit, category margins, shipping patterns), model, feature importance and interpretation
 - [ ] Power BI dashboard: KPI overview, regional map, category drill-down
 - [ ] Business recommendations combining all three tracks
@@ -61,10 +61,10 @@ WAPE on the 12 holdout months (Jan–Dec 2017), lower is better:
 │   ├── db_utils.py              SQLite connection and query helper
 │   ├── sql_runner.py            Runs a track's queries and saves the results as CSV
 │   ├── plotting.py              Shared chart style
-│   └── forecasting/             Series loading, baselines, MAPE and WAPE
+│   └── forecasting/             Series, baselines, metrics, SARIMA selection, stock targets
 ├── notebooks/
 │   ├── 01_etl_superstore.ipynb  The ETL step by step
-│   ├── forecasting/             Exploration and holdout validation
+│   ├── forecasting/             Exploration, model validation, forecast and inventory plan
 │   └── regression/
 ├── outputs/                     Generated tables and figures, one folder per track
 ├── reports/                     Conclusions, one document per track

@@ -16,3 +16,8 @@ MONTHLY_SALES_BY_CATEGORY_CSV = OUTPUTS_DIR / "forecasting" / "tables" / "02_mon
 
 # Last months set aside to validate the forecasts; never used to fit or tune a model.
 HOLDOUT_MONTHS = 12
+
+# Final forecast and inventory plan
+FORECAST_HORIZON = 6
+# Share of months in which stock should cover demand (90% = run short in about 1 month in 10)
+SERVICE_LEVEL = 0.90
